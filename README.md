@@ -1,57 +1,77 @@
-# Flu Shot Vaccine Prediction with Logistic Regression
+# 💉 Flu Shot Vaccine Prediction with Logistic Regression
 
-Machine learning project focused on predicting **H1N1** and **seasonal flu vaccine uptake** using survey-based respondent data from the **Flu Shot Learning** dataset.
-
-This repository presents a complete supervised learning workflow, from data preparation and exploratory analysis to baseline modelling, hyperparameter tuning and final evaluation on an unseen test set.
+> End-to-end machine learning project for predicting **H1N1** and **seasonal flu vaccine uptake** using structured survey data and **Logistic Regression**.
 
 ---
 
-## Project Overview
+## 📌 Overview
 
-Vaccination uptake prediction can support more targeted public health communication and resource allocation. In this project, I built two separate **Logistic Regression** models to predict whether a respondent received:
+This project explores whether a respondent is likely to receive:
 
 - **H1N1 vaccine**
 - **Seasonal flu vaccine**
 
-The project includes:
+The repository covers the full workflow of a supervised machine learning project, including:
 
 - data loading and merging
 - exploratory data analysis
-- missing value handling through imputation and amputation
-- categorical encoding
-- feature scaling
+- preprocessing
 - train / validation / test split
 - baseline modelling
 - hyperparameter tuning with **GridSearchCV**
-- validation and final test evaluation
+- final evaluation on unseen data
+
+The goal was not only to build predictive models, but also to evaluate how well a linear classification approach performs on a real multilabel vaccination dataset.
 
 ---
 
-## Objectives
+## 🎯 Business Problem
 
-The main goal of this project was to evaluate how well Logistic Regression can classify vaccine uptake for two binary targets and compare:
+Vaccination campaigns are more effective when outreach can be prioritised towards people who are less likely to get vaccinated on their own.
 
-- a **baseline model**
-- a **tuned model** with GridSearchCV
+A model like this can support decision-making by helping identify groups that may require:
 
-The final objective was to assess whether tuning improved performance and whether the final models generalised well on unseen data.
+- earlier communication
+- targeted reminders
+- educational interventions
+- better campaign resource allocation
+
+In this project, I used **Logistic Regression** to estimate vaccine uptake likelihood for two binary targets.
 
 ---
 
-## Dataset
+## 🧠 Project Workflow
+
+```mermaid
+flowchart TD
+    A[Load feature and label datasets] --> B[Merge on respondent_id]
+    B --> C[Exploratory Data Analysis]
+    C --> D[Preprocessing]
+    D --> E[Train / Validation / Test Split]
+    E --> F[Baseline Logistic Regression]
+    E --> G[GridSearchCV Tuned Logistic Regression]
+    F --> H[Validation Evaluation]
+    G --> H
+    H --> I[Baseline vs Tuned Comparison]
+    I --> J[Final Test Evaluation]
+```
+
+---
+
+## 🗂️ Dataset
 
 **Source:** [DrivenData - Flu Shot Learning: Predict H1N1 and Seasonal Flu Vaccines](https://www.drivendata.org/competitions/66/flu-shot-learning/data/)
 
-Files used in this project:
+Files used in this repository:
 
-- `training_set_features.csv`
-- `training_set_labels.csv`
+- `data/training_set_features.csv`
+- `data/training_set_labels.csv`
 
-The labels were merged with the feature dataset using `respondent_id`.
+The datasets were merged using `respondent_id`.
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Python**
 - **Pandas**
@@ -63,83 +83,91 @@ The labels were merged with the feature dataset using `respondent_id`.
 
 ---
 
-## Project Workflow
+## ⚙️ Methodology
 
 ### 1. Data Preparation
-
-- Loaded feature and label datasets
-- Merged both files using `respondent_id`
-- Created a modelling copy of the dataset
-- Dropped highly incomplete categorical fields:
+- Loaded and merged the feature and label datasets
+- Created a modelling copy of the original dataframe
+- Removed highly incomplete categorical features:
   - `employment_industry`
   - `employment_occupation`
 - Removed `respondent_id` from the modelling dataset
 
 ### 2. Exploratory Data Analysis
-
 The project includes:
-
 - **5 univariate visualisations**
 - **5 grouped / complex visualisations**
 
-These visualisations were used to identify:
-
-- target imbalance
-- missing data patterns
-- relevant behavioural and demographic relationships
-- potential drivers of vaccine uptake
+These charts helped identify:
+- class imbalance
+- missing value concentration
+- behavioural and demographic patterns
+- variables associated with vaccine uptake
 
 ### 3. Preprocessing
-
-- Missing categorical values were handled with **most frequent imputation**
-- Missing numerical values were handled with **median imputation**
-- Categorical variables were encoded with **OneHotEncoder**
-- Numerical variables were scaled with **StandardScaler**
-- Data was split into:
-  - **60% training**
-  - **20% validation**
-  - **20% test**
-- Stratification was applied using `h1n1_vaccine`
+- **Categorical missing values** → most frequent imputation
+- **Numerical missing values** → median imputation
+- **Categorical encoding** → OneHotEncoder
+- **Numerical scaling** → StandardScaler
+- **Split strategy**:
+  - 60% train
+  - 20% validation
+  - 20% test
+- Stratification applied using `h1n1_vaccine`
 
 ### 4. Modelling
+Two separate models were trained:
+- one for `h1n1_vaccine`
+- one for `seasonal_vaccine`
 
-Two separate Logistic Regression models were built for:
-
-- `h1n1_vaccine`
-- `seasonal_vaccine`
-
-For each target, I trained:
-
-- a **baseline Logistic Regression**
-- a **tuned Logistic Regression** using **GridSearchCV**
+For each target:
+- **Baseline Logistic Regression**
+- **Tuned Logistic Regression with GridSearchCV**
 
 ### 5. Hyperparameter Tuning
-
 The tuned models were optimised using:
-
 - `C`
 - `penalty`
 - `solver`
 
-The main optimisation metric used during tuning was **ROC-AUC**.
+The main tuning metric was **ROC-AUC**.
 
 ---
 
-## Why Logistic Regression?
+## 🤖 Why Logistic Regression?
 
-Logistic Regression was selected because it is:
+Logistic Regression was chosen because it is:
 
-- strong for binary classification tasks
+- effective for binary classification
 - interpretable
-- efficient to train
-- appropriate for structured tabular data
-- a solid baseline for probability-based classification problems
+- computationally efficient
+- suitable for structured tabular data
+- strong as a baseline for probability-based classification tasks
 
-It also allows probability prediction, which is useful when evaluating classification with **ROC-AUC**.
+It is also a good fit when the objective includes evaluating class probabilities with **ROC-AUC**.
 
 ---
 
-## Evaluation Metrics
+## 📊 Key Visual Insights
+
+### H1N1 target distribution
+![H1N1 Distribution](assets/key_2h1n1_vaccine_distribution.png)
+
+This chart highlights that the **H1N1 target is more imbalanced**, which makes metrics such as **ROC-AUC** and **F1-score** more informative than accuracy alone.
+
+### Doctor recommendation vs H1N1 uptake
+![Doctor Recommendation vs H1N1](assets/key1_doctor_recc_h1n1_vs_h1n1_vaccine.png)
+
+Doctor recommendation appears strongly associated with H1N1 vaccination uptake, suggesting that behavioural and trust-related features may be important predictors.
+
+### Missing values by feature
+![Missing Values](assets/key3_missing_values_per_column.png)
+
+Missingness is not uniformly distributed across the dataset, which justifies the use of **imputation** and **amputation** during preprocessing.
+
+---
+
+## 📏 Evaluation Metrics
 
 The models were evaluated using:
 
@@ -150,11 +178,16 @@ The models were evaluated using:
 - **Accuracy**
 - **Classification Report**
 
-ROC-AUC was especially important because it evaluates the quality of probability ranking, while F1-score helped assess balance between precision and recall.
+### Why these metrics?
+- **ROC-AUC** evaluates ranking quality using probabilities
+- **F1-score** balances precision and recall
+- **Precision** shows how reliable positive predictions are
+- **Recall** shows how many real positive cases were captured
+- **Accuracy** provides an overall correctness view
 
 ---
 
-## Final Test Results
+## 🧪 Final Test Results
 
 | Target | ROC-AUC | F1-score | Precision | Recall | Accuracy |
 |--------|--------:|---------:|----------:|-------:|---------:|
@@ -163,67 +196,72 @@ ROC-AUC was especially important because it evaluates the quality of probability
 
 ---
 
-## Key Findings
+## 🔍 Key Findings
 
 - Logistic Regression performed strongly for both targets.
-- The **seasonal vaccine** target achieved very high and stable performance.
-- The **H1N1** target was more challenging, especially in identifying positive cases, but the final model still showed good generalisation.
-- Hyperparameter tuning produced only **marginal improvements** over baseline, but the tuned models remained stable across validation and test data.
-- Final results suggest that Logistic Regression is a reliable approach for this structured classification problem.
+- The **seasonal vaccine** target achieved **very high and stable performance**.
+- The **H1N1** target was more challenging, especially in capturing positive cases.
+- Hyperparameter tuning produced **only marginal improvements** over baseline.
+- Even so, the tuned models remained **stable across validation and test sets**, suggesting good generalisation.
 
 ---
 
-## Repository Structure
+## 📁 Repository Structure
 
-~~~bash
+```bash
 vaccine_prediction_ml_project/
 │
-├── assets/                # exported charts and visual assets
-├── data/                  # raw dataset files
-├── src/                   # notebook / source files
-├── requirements.txt       # project dependencies
+├── assets/                     # exported charts and visual assets
+├── data/                       # raw dataset files
+├── src/
+│   └── flu_shot_logistic_regression.ipynb     # main notebook
+├── requirements.txt
 ├── .gitignore
 └── README.md
-~~~
+```
 
 ---
 
-## How to Run
+## ▶️ How to Run
 
 ### 1. Clone the repository
 
-~~~bash
+```bash
 git clone https://github.com/enriquebruno12/vaccine_prediction_ml_project.git
 cd vaccine_prediction_ml_project
-~~~
+```
 
 ### 2. Install dependencies
 
-~~~bash
+```bash
 pip install -r requirements.txt
-~~~
+```
 
-### 3. Open the notebook
+### 3. Launch Jupyter Notebook
 
-~~~bash
+```bash
 jupyter notebook
-~~~
+```
 
-Then open the project notebook inside the `src/` folder.
+Then open:
+
+```bash
+src/flu_shot_logistic_regression.ipynb
+```
 
 ---
 
-## Reproducibility
+## 🔁 Reproducibility
 
 This project uses the student ID as the `random_state` for reproducibility in:
 
-- train / validation / test splitting
+- dataset splitting
 - Logistic Regression training
-- GridSearchCV model configuration
+- GridSearchCV configuration
 
 ---
 
-## Limitations
+## ⚠️ Limitations
 
 Although the project achieved strong results, some limitations remain:
 
@@ -236,33 +274,34 @@ Although the project achieved strong results, some limitations remain:
 
 ---
 
-## Future Improvements
+## 🚀 Future Improvements
 
-Possible next steps for improving this project include:
+Possible next steps include:
 
 - threshold tuning instead of a fixed `0.5` cutoff
 - class weighting for the H1N1 target
 - probability calibration
 - feature selection
-- comparison against other machine learning models
+- comparison with stronger models
 - deployment as a simple API or Streamlit app
 
 ---
 
-## What This Project Demonstrates
+## 💼 What This Project Demonstrates
 
 This repository highlights my ability to:
 
-- work with structured tabular datasets
-- perform end-to-end machine learning preprocessing
-- build and evaluate classification models
-- use GridSearchCV for hyperparameter tuning
-- interpret validation and test performance critically
-- organise a machine learning workflow in a clear and reproducible way
+- build an end-to-end machine learning workflow
+- work with structured tabular data
+- perform preprocessing for mixed data types
+- apply Logistic Regression in a classification setting
+- tune models with GridSearchCV
+- evaluate generalisation across validation and test sets
+- communicate results clearly through charts and metrics
 
 ---
 
-## Author
+## 👤 Author
 
 **Enrique Soares**
 
